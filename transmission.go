@@ -23,9 +23,9 @@ func GetTorrents() string {
     return returnstring
 }
 
-func AddTorrent(magnet string, location string) {
-    cmd,_ := transmission.NewAddCmdByMagnet(magnet)
-    cmd.SetDownloadDir(location)
+func (q *DownloadQuery) Download() {
+    cmd,_ := transmission.NewAddCmdByMagnet(q.Magnet)
+    cmd.SetDownloadDir(q.Path)
     add,err := tclient.ExecuteAddCommand(cmd)
 
     if err != nil {
@@ -33,43 +33,22 @@ func AddTorrent(magnet string, location string) {
         return
     }
 
-    Log2Me("added torrent: " + add.Name)
-    go WaitTillFinished(add)
+    Log2Sender(q.Requester, "added torrent: " + add.Name)
+    go q.WaitTillFinished(add)
 }
 
-func WaitTillFinished(add transmission.TorrentAdded) {
+func (q *DownloadQuery) WaitTillFinished(add transmission.TorrentAdded) {
     for {
         if TorrentIsFinished(add.ID) {
-            Log2Me(add.Name + " is finished")
+            Log2Sender(q.Requester, add.Name + " is finished")
             break
         }
 
         time.Sleep(time.Second * 5)
     }
 
-    path := GetTorrentPath(add.ID)
-    if path != "" {
-        DownloadSubtitles(path)
-    }
+    DownloadSubtitles(q.Path)
     RemoveTorrent(add.ID)
-}
-
-func GetTorrentPath(id int) string {
-    torrents, err := tclient.GetTorrents()
-    if err != nil {
-        Log2Me(err.Error())
-        return ""
-    }
-
-    for _,torrent := range torrents {
-        if torrent.ID == id {
-            return torrent.DownloadDir
-        }
-    }
-
-    Log2Me(fmt.Sprintf("Cant find torrent by id %d", id))
-    return ""
-
 }
 
 // remove but keep files
@@ -97,5 +76,5 @@ func TorrentIsFinished(id int) bool {
 }
 
 func SetupTransmissionClient() {
-    tclient = transmission.New("http://<host>:<port>", "", "")
+    tclient = transmission.New(transmissionUrl, "", "")
 }

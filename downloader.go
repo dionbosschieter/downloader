@@ -6,18 +6,35 @@ import (
     "os/exec"
     "bytes"
     piratebay "github.com/gnur/go-piratebay"
+    "gopkg.in/tucnak/telebot.v2"
 )
 
 var client piratebay.Piratebay
 var torrent piratebay.Torrent
 
+const (
+    telegramToken = "<your-telegram-token>"
+    transmissionUrl = "http://<host>:<port>"
+    seriePath = "/path"
+    moviePath = "/path"
+    masterChatId = 1337
+)
+
+
+type DownloadQuery struct {
+    Title string
+    Requester *telebot.User
+    Path string
+    Magnet string
+}
+
 func InitClient() {
     client = piratebay.Piratebay { Url: "https://thepiratebay.org" }
 }
 
-func Search(title string, location string) {
-    Log("Searching for " + title)
-    torrents,err := client.Search(title)
+func (q *DownloadQuery) Perform() {
+    Log("Searching for " + q.Title)
+    torrents,err := client.Search(q.Title)
 
     if err != nil {
         Log2Me(err.Error())
@@ -28,7 +45,8 @@ func Search(title string, location string) {
         return
     }
 
-    AddTorrent(torrents[0].MagnetLink, location)
+    q.Magnet = torrents[0].MagnetLink
+    q.Download()
 }
 
 func DownloadSubtitles(path string) {
@@ -41,12 +59,15 @@ func DownloadSubtitles(path string) {
         Log2Me(err.Error())
         return
     }
-
-    Log2Me(fmt.Sprintf("Executed subtitle downloader for %s", path))
 }
 
 func Log2Me(message string) {
     tbot.Send(&me, message)
+    Log(message)
+}
+
+func Log2Sender(sender *telebot.User, message string) {
+    tbot.Send(sender, message)
     Log(message)
 }
 

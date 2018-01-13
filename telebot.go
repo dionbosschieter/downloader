@@ -1,16 +1,16 @@
 package main
 
 import (
-	"time"
+    "time"
     "gopkg.in/tucnak/telebot.v2"
 )
 
 var tbot telebot.Bot
-var me = telebot.Chat{ID: 1337, }
+var me = telebot.Chat{ID: masterChatId, }
 
 func SetupTalkyBot() {
     bot, err := telebot.NewBot(telebot.Settings{
-        Token:  "<token>",
+        Token:  telegramToken,
         Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
     })
     if err != nil {
@@ -22,7 +22,8 @@ func SetupTalkyBot() {
 
     tbot.Handle("/adds", func(m *telebot.Message) {
         if len(m.Payload) > 0 {
-            Search(m.Payload, "<TVSHOWPATH>")
+            query := DownloadQuery {Title: m.Payload, Requester: m.Sender, Path: seriePath}
+            query.Perform()
         } else {
             tbot.Send(m.Sender, "Requires a payload /adds <payload>")
         }
@@ -30,7 +31,8 @@ func SetupTalkyBot() {
 
     tbot.Handle("/addm", func(m *telebot.Message) {
         if len(m.Payload) > 0 {
-            Search(m.Payload, "<MOVIEPATH>")
+            query := DownloadQuery {Title: m.Payload, Requester: m.Sender, Path: moviePath}
+            query.Perform()
         } else {
             tbot.Send(m.Sender, "Requires a payload /addm <payload>")
         }
