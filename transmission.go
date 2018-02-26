@@ -47,7 +47,6 @@ func (q *DownloadQuery) WaitTillFinished(add transmission.TorrentAdded) {
         time.Sleep(time.Second * 5)
     }
 
-    DownloadSubtitles(q.Path)
     RemoveTorrent(add.ID)
 }
 

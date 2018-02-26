@@ -3,8 +3,6 @@ package main
 import (
     "time"
     "fmt"
-    "os/exec"
-    "bytes"
     piratebay "github.com/gnur/go-piratebay"
     "gopkg.in/tucnak/telebot.v2"
 )
@@ -47,18 +45,6 @@ func (q *DownloadQuery) Perform() {
 
     q.Magnet = torrents[0].MagnetLink
     q.Download()
-}
-
-func DownloadSubtitles(path string) {
-    cmd := exec.Command("/usr/bin/ruby", "subdbdownloader.rb", path)
-    var out bytes.Buffer
-    cmd.Stdout = &out
-    err := cmd.Run()
-
-    if err != nil {
-        Log2Me(err.Error())
-        return
-    }
 }
 
 func Log2Me(message string) {

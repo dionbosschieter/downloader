@@ -42,5 +42,9 @@ func SetupTalkyBot() {
         tbot.Send(m.Sender, GetTorrents())
     })
 
+    tbot.Handle("/help", func(m *telebot.Message) {
+        tbot.Send(m.Sender, "/addm <search title> for movies\n/adds <search title> for series")
+    })
+
     tbot.Start()
 }
