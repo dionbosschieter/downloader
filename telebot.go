@@ -8,6 +8,8 @@ import (
 var tbot telebot.Bot
 var me = telebot.Chat{ID: masterChatId, }
 
+// todo: add queue commands
+// todo: poll the queue
 func SetupTalkyBot() {
     bot, err := telebot.NewBot(telebot.Settings{
         Token:  telegramToken,
