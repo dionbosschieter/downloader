@@ -11,16 +11,7 @@ import (
 var client piratebay.Piratebay
 var torrent piratebay.Torrent
 var rar *rarbg.Client
-
-// use a config file
-// https://godoc.org/gopkg.in/yaml.v2
-const (
-	telegramToken   = "<your-telegram-token>"
-	transmissionUrl = "http://<host>:<port>"
-	seriePath       = "/path"
-	moviePath       = "/path"
-	masterChatId    = 1337
-)
+var settings Settings
 
 type DownloadQuery struct {
 	Title     string
@@ -87,10 +78,8 @@ func Log(message string) {
 }
 
 func main() {
-	// parse settings
-	var settings Settings
 	if settings.FileExists() {
-		settings.Read()
+		settings.Parse()
 	} else {
 		panic("No settings.yaml is defined, see example.yaml")
 	}

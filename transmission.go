@@ -75,5 +75,5 @@ func TorrentIsFinished(id int) bool {
 }
 
 func SetupTransmissionClient() {
-	tclient = transmission.New(transmissionUrl, "", "")
+	tclient = transmission.New(settings.TransmissionUrl, "", "")
 }

@@ -12,7 +12,7 @@ type Settings struct {
 	TransmissionUrl string `yaml:"transmissionUrl"`
 	SeriePath       string `yaml:"seriePath"`
 	MoviePath       string `yaml:"moviePath"`
-	MasterChatId    string `yaml:"masterChatId"`
+	MasterChatId    int64  `yaml:"masterChatId"`
 }
 
 func (settings *Settings) FileExists() bool {
@@ -24,7 +24,7 @@ func (settings *Settings) FileExists() bool {
     return true
 }
 
-func (settings *Settings) Read() *Settings {
+func (settings *Settings) Parse() *Settings {
 	yamlFile, err := ioutil.ReadFile("settings.yaml")
 	if err != nil {
 		panic(fmt.Sprintf("err opening settings: #%v ", err))

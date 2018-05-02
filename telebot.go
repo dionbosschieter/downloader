@@ -6,13 +6,14 @@ import (
 )
 
 var tbot telebot.Bot
-var me = telebot.Chat{ID: masterChatId}
+var me telebot.Chat
 
 // todo: add queue commands
 // todo: poll the queue
 func SetupTalkyBot() {
+	me = telebot.Chat{ID: settings.MasterChatId}
 	bot, err := telebot.NewBot(telebot.Settings{
-		Token:  telegramToken,
+		Token:  settings.TelegramToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
 	})
 	if err != nil {
@@ -24,7 +25,7 @@ func SetupTalkyBot() {
 
 	tbot.Handle("/adds", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
-			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: seriePath}
+			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
 			query.Perform()
 		} else {
 			tbot.Send(m.Sender, "Requires a payload /adds <payload>")
@@ -33,7 +34,7 @@ func SetupTalkyBot() {
 
 	tbot.Handle("/addm", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
-			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: moviePath}
+			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: settings.MoviePath}
 			query.Perform()
 		} else {
 			tbot.Send(m.Sender, "Requires a payload /addm <payload>")
