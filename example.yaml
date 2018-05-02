@@ -1,0 +1,5 @@
+telegramToken:   '89432749:AA...'
+transmissionUrl: 'http://<server>:<port>'
+seriePath:       '/mnt/shows'
+moviePath:       '/mnt/movies'
+masterChatId:    1337 

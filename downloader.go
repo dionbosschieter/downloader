@@ -87,6 +87,14 @@ func Log(message string) {
 }
 
 func main() {
+	// parse settings
+	var settings Settings
+	if settings.FileExists() {
+		settings.Read()
+	} else {
+		panic("No settings.yaml is defined, see example.yaml")
+	}
+
 	InitClient()
 	SetupTransmissionClient()
 	Log("Init downloader")
