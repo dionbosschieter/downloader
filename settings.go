@@ -4,6 +4,7 @@ import (
     "io/ioutil"
     "gopkg.in/yaml.v2"
     "fmt"
+    "os"
 )
 
 type Settings struct {
@@ -12,6 +13,15 @@ type Settings struct {
 	SeriePath       string `yaml:"seriePath"`
 	MoviePath       string `yaml:"moviePath"`
 	MasterChatId    string `yaml:"masterChatId"`
+}
+
+func (settings *Settings) FileExists() bool {
+    if _, err := os.Stat("settings.yaml"); err != nil {
+        if os.IsNotExist(err) {
+            return false
+        }
+    }
+    return true
 }
 
 func (settings *Settings) Read() *Settings {
