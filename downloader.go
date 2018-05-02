@@ -12,6 +12,8 @@ var client piratebay.Piratebay
 var torrent piratebay.Torrent
 var rar *rarbg.Client
 
+// use a config file
+// https://godoc.org/gopkg.in/yaml.v2
 const (
     telegramToken = "<your-telegram-token>"
     transmissionUrl = "http://<host>:<port>"
@@ -87,6 +89,6 @@ func Log(message string) {
 func main() {
     InitClient()
     SetupTransmissionClient()
-    Log("Init piratebay and transmission client")
+    Log("Init downloader")
     SetupTalkyBot()
 }
