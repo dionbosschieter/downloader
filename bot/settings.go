@@ -1,4 +1,4 @@
-package main
+package bot
 
 import (
     "io/ioutil"
@@ -8,11 +8,13 @@ import (
 )
 
 type Settings struct {
-	TelegramToken   string `yaml:"telegramToken"`
-	TransmissionUrl string `yaml:"transmissionUrl"`
-	SeriePath       string `yaml:"seriePath"`
-	MoviePath       string `yaml:"moviePath"`
-	MasterChatId    int64  `yaml:"masterChatId"`
+	TelegramToken   string   `yaml:"telegramToken"`
+	TransmissionUrl string   `yaml:"transmissionUrl"`
+	SeriePath       string   `yaml:"seriePath"`
+	MoviePath       string   `yaml:"moviePath"`
+	MasterChatId    int64    `yaml:"masterChatId"`
+    SearchProviders []string `yaml:"searchProviders"`
+    SearchPostfixes []string `yaml:"searchPostfixes"`
 }
 
 func (settings *Settings) FileExists() bool {

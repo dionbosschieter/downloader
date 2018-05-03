@@ -1,4 +1,4 @@
-package main
+package bot
 
 import (
 	"fmt"
@@ -74,6 +74,6 @@ func TorrentIsFinished(id int) bool {
 	return true
 }
 
-func SetupTransmissionClient() {
+func SetupTransmissionClient(settings Settings) {
 	tclient = transmission.New(settings.TransmissionUrl, "", "")
 }

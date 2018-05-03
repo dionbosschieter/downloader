@@ -2,4 +2,10 @@ telegramToken:   '89432749:AA...'
 transmissionUrl: 'http://<server>:<port>'
 seriePath:       '/mnt/shows'
 moviePath:       '/mnt/movies'
-masterChatId:    1337 
+masterChatId:    1337
+torrentProviders:
+  - 'thepiratebay'
+  - 'rarbg'
+searchPostfixes:
+  - '1080p'
+  - '720p'

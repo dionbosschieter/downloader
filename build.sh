@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/bin/sh -e
 # todo: convert to makefile
-go build downloader.go settings.go telebot.go transmission.go
+go build -o downloader main.go
 
 fpm -f -s dir -t deb -n godownloader downloader=/usr/local/bin/
