@@ -3,7 +3,6 @@ package bot
 import (
     "github.com/dionbosschieter/downloader/searchprovider/rarbg"
     "github.com/dionbosschieter/downloader/searchprovider/thepiratebay"
-    "reflect"
 )
 
 var settings Settings
@@ -13,27 +12,15 @@ var allproviders = []SearchProvider{
     thepiratebay.SearchProvider{},
 }
 
-func InArray(needle interface{}, haystack interface{}) bool {
-    switch reflect.TypeOf(haystack).Kind() {
-    case reflect.Slice, reflect.Array:
-        list := reflect.ValueOf(haystack)
-
-        for i:=0; i<list.Len();i++ {
-            if reflect.DeepEqual(needle, list.Index(i).Interface()) {
-                return true
-            }
-        }
-    }
-
-    return false
-}
-
+// returns searchprovider list sorted on provided search provider names
 func InitSearchProviders(providers []string) (searchproviders []SearchProvider) {
     searchproviders = make([]SearchProvider, len(allproviders))
 
-    for counter,provider := range allproviders {
-        if InArray(provider.Name(), providers) {
-            searchproviders[counter] = provider
+    for counter,provider := range providers {
+        for _,compareProvider := range allproviders {
+            if compareProvider.Name() == provider {
+                searchproviders[counter] = compareProvider
+            }
         }
     }
 
