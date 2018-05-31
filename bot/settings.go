@@ -8,6 +8,7 @@ import (
 )
 
 type Settings struct {
+    Path            string
 	TelegramToken   string   `yaml:"telegramToken"`
 	TransmissionUrl string   `yaml:"transmissionUrl"`
 	SeriePath       string   `yaml:"seriePath"`
@@ -17,8 +18,8 @@ type Settings struct {
     SearchPostfixes []string `yaml:"searchPostfixes"`
 }
 
-func (settings *Settings) FileExists() bool {
-    if _, err := os.Stat("settings.yaml"); err != nil {
+func (settings *Settings) FileExists(settingsPath string) bool {
+    if _, err := os.Stat(settingsPath); err != nil {
         if os.IsNotExist(err) {
             return false
         }
@@ -26,8 +27,8 @@ func (settings *Settings) FileExists() bool {
     return true
 }
 
-func (settings *Settings) Parse() *Settings {
-	yamlFile, err := ioutil.ReadFile("settings.yaml")
+func (settings *Settings) Parse(settingsPath string) *Settings {
+	yamlFile, err := ioutil.ReadFile(settingsPath)
 	if err != nil {
 		panic(fmt.Sprintf("err opening settings: #%v ", err))
 	}

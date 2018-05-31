@@ -1,12 +1,30 @@
 package rarbg
 
-type SearchProvider struct {}
+import (
+    rar "github.com/ricksancho/rarbg-torrentapi"
+)
+
+type SearchProvider struct {
+    client *rar.Client
+}
 
 func (SearchProvider) Name() string {
     return "rarbg"
 }
 
-// returns Magnet of first match on rarbg
-func (SearchProvider) Search(title string, searchpostfixes []string) string {
-    return ""
+func (provider SearchProvider) Search(title string, searchpostfixes []string) (magnet string) {
+    var query = map[string]string{"search_string":title, "sort": "seeders"}
+
+    result,_ := provider.client.Search(query)
+
+    if len(result.Torrents) > 0 {
+        magnet = result.Torrents[0].MagnetURL
+    }
+
+    return
+}
+
+func (provider SearchProvider) Init() {
+    provider.client, _ = rar.New(1337)
+    provider.client.Init()
 }

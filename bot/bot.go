@@ -6,9 +6,6 @@ import (
     "reflect"
 )
 
-// var client piratebay.Piratebay
-// var torrent piratebay.Torrent
-// var rar *rarbg.Client
 var settings Settings
 
 var allproviders = []SearchProvider{
@@ -32,12 +29,10 @@ func InArray(needle interface{}, haystack interface{}) bool {
 }
 
 func InitSearchProviders(providers []string) (searchproviders []SearchProvider) {
-    counter := 0
     searchproviders = make([]SearchProvider, len(allproviders))
 
-    for _,provider := range allproviders {
-        counter++
-        if InArray(provider, providers) {
+    for counter,provider := range allproviders {
+        if InArray(provider.Name(), providers) {
             searchproviders[counter] = provider
         }
     }
@@ -45,15 +40,9 @@ func InitSearchProviders(providers []string) (searchproviders []SearchProvider) 
     return searchproviders
 }
 
-func InitClient() {
-	// client = piratebay.Piratebay{Url: "https://thepiratebay.org"}
-	// rar, _ = rarbg.New(1337)
-	// rar.Init()
-}
-
-func InitBot() {
-    if settings.FileExists() {
-		settings.Parse()
+func InitBot(settingsPath string) {
+    if settings.FileExists(settingsPath) {
+		settings.Parse(settingsPath)
 	} else {
 		panic("No settings.yaml is defined, see example.yaml")
 	}

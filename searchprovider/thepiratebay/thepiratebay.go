@@ -1,12 +1,35 @@
 package thepiratebay
 
-type SearchProvider struct {}
+import (
+    pby "github.com/gnur/go-piratebay"
+)
 
-func (SearchProvider) Name() string {
+type SearchProvider struct {
+    client pby.Piratebay
+}
+
+func (provider SearchProvider) Name() string {
     return "thepiratebay"
 }
 
-// returns Magnet of first match on rarbg
-func (SearchProvider) Search(title string, searchpostfixes []string) string {
+func (provider SearchProvider) Init() {
+    provider.client = pby.Piratebay{Url: "https://thepiratebay.org"}
+}
+
+func (provider SearchProvider) Search(title string, searchpostfixes []string) string {
+    for _, searchpostfix := range searchpostfixes {
+        pbytorrents,_ := provider.client.Search(title + " " + searchpostfix)
+
+        if len(pbytorrents) > 0 {
+            return pbytorrents[0].MagnetLink
+        }
+    }
+
+    pbytorrents,_ := provider.client.Search(title)
+
+    if len(pbytorrents) > 0 {
+        return pbytorrents[0].MagnetLink
+    }
+
     return ""
 }

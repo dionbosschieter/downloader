@@ -16,36 +16,10 @@ func (q *DownloadQuery) Perform(searchproviders []SearchProvider, searchpostfixe
         if q.Magnet != "" {
             q.Download()
             break
+        } else {
+            Log2Sender(q.Requester, "Could not find any result for " + q.Title+ " with provider " + provider.Name())
         }
     }
-
-	// var rarbgQuery = map[string]string{"search_string": q.Title, "sort": "seeders", "category": "tv"}
-	// if q.IsMovie {
-	// 	rarbgQuery["category"] = "movies"
-	// }
-	// pbytorrents, pbyerr := client.Search(q.Title)
-	// rarresult, rarerr := rar.Search(rarbgQuery)
-    //
-	// if pbyerr != nil {
-	// 	Log2Me(pbyerr.Error())
-	// }
-	// if rarerr != nil {
-	// 	Log2Me(rarerr.Error())
-	// 	return
-	// }
-    //
-	// if len(pbytorrents) == 0 && len(rarresult.Torrents) == 0 {
-	// 	Log2Sender(q.Requester, "Could not find any result for: "+q.Title)
-	// 	return
-	// }
-    //
-	// if len(rarresult.Torrents) > 0 {
-	// 	q.Magnet = rarresult.Torrents[0].MagnetURL
-	// 	q.Download()
-	// } else {
-	// 	q.Magnet = pbytorrents[0].MagnetLink
-	// 	q.Download()
-	// }
 }
 
 // todo: add queue commands
