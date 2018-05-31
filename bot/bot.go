@@ -12,7 +12,7 @@ var allproviders = []SearchProvider{
     thepiratebay.SearchProvider{},
 }
 
-// returns searchprovider list sorted on provided search provider names
+// returns a searchprovider list sorted on the provided searchprovider names
 func InitSearchProviders(providers []string) (searchproviders []SearchProvider) {
     searchproviders = make([]SearchProvider, len(allproviders))
 
