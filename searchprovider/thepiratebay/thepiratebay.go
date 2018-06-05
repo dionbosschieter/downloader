@@ -8,15 +8,11 @@ type SearchProvider struct {
     client pby.Piratebay
 }
 
-func (provider SearchProvider) Name() string {
+func (provider *SearchProvider) Name() string {
     return "thepiratebay"
 }
 
-func (provider SearchProvider) Init() {
-    provider.client = pby.Piratebay{Url: "https://thepiratebay.org"}
-}
-
-func (provider SearchProvider) Search(title string, searchpostfixes []string) string {
+func (provider *SearchProvider) Search(title string, searchpostfixes []string) string {
     for _, searchpostfix := range searchpostfixes {
         pbytorrents,_ := provider.client.Search(title + " " + searchpostfix)
 
@@ -32,4 +28,14 @@ func (provider SearchProvider) Search(title string, searchpostfixes []string) st
     }
 
     return ""
+}
+
+func New() (provider *SearchProvider) {
+    client := pby.Piratebay{Url: "https://thepiratebay.org"}
+
+    provider = &SearchProvider{
+        client: client,
+    }
+
+    return
 }

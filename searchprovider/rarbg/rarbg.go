@@ -8,23 +8,29 @@ type SearchProvider struct {
     client *rar.Client
 }
 
-func (SearchProvider) Name() string {
+func (provider *SearchProvider) Name() string {
     return "rarbg"
 }
 
-func (provider SearchProvider) Search(title string, searchpostfixes []string) (magnet string) {
+func (provider *SearchProvider) Search(title string, searchpostfixes []string) (magnet string) {
     var query = map[string]string{"search_string":title, "sort": "seeders"}
 
     result,_ := provider.client.Search(query)
 
     if len(result.Torrents) > 0 {
-        magnet = result.Torrents[0].MagnetURL
+        return result.Torrents[0].MagnetURL
+    }
+
+    return ""
+}
+
+func New() (provider *SearchProvider) {
+    client,_ := rar.New(1337)
+    client.Init()
+
+    provider = &SearchProvider{
+        client: client,
     }
 
     return
-}
-
-func (provider SearchProvider) Init() {
-    provider.client, _ = rar.New(1337)
-    provider.client.Init()
 }

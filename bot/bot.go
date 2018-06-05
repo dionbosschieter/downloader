@@ -8,23 +8,25 @@ import (
 var settings Settings
 
 var allproviders = []SearchProvider{
-    rarbg.SearchProvider{},
-    thepiratebay.SearchProvider{},
+    rarbg.New(),
+    thepiratebay.New(),
 }
 
 // returns a searchprovider list sorted on the provided searchprovider names
 func InitSearchProviders(providers []string) (searchproviders []SearchProvider) {
     searchproviders = make([]SearchProvider, len(allproviders))
 
-    for counter,provider := range providers {
+    var count = 0
+    for _,provider := range providers {
         for _,compareProvider := range allproviders {
             if compareProvider.Name() == provider {
-                searchproviders[counter] = compareProvider
+                searchproviders[count] = compareProvider
+                count++
             }
         }
     }
 
-    return searchproviders
+    return searchproviders[:count]
 }
 
 func InitBot(settingsPath string) {
