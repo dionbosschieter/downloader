@@ -1,18 +1,20 @@
-package rarbg
+package main
 
 import (
     rar "github.com/ricksancho/rarbg-torrentapi"
 )
 
-type SearchProvider struct {
+type searchprovider struct {
     client *rar.Client
 }
 
-func (provider *SearchProvider) Name() string {
+var SearchProvider searchprovider
+
+func (provider *searchprovider) Name() string {
     return "rarbg"
 }
 
-func (provider *SearchProvider) Search(title string, searchpostfixes []string) (magnet string) {
+func (provider *searchprovider) Search(title string, searchpostfixes []string) (magnet string) {
     var query = map[string]string{"search_string":title, "sort": "seeders"}
 
     result,_ := provider.client.Search(query)
@@ -24,13 +26,7 @@ func (provider *SearchProvider) Search(title string, searchpostfixes []string) (
     return ""
 }
 
-func New() (provider *SearchProvider) {
-    client,_ := rar.New(1337)
-    client.Init()
-
-    provider = &SearchProvider{
-        client: client,
-    }
-
-    return
+func (provider *searchprovider) Init() {
+    provider.client,_ = rar.New(1337)
+    provider.client.Init()
 }

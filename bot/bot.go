@@ -1,28 +1,38 @@
 package bot
 
 import (
-    "github.com/dionbosschieter/downloader/searchprovider/rarbg"
-    "github.com/dionbosschieter/downloader/searchprovider/thepiratebay"
+    "plugin"
 )
 
 var settings Settings
 
-var allproviders = []SearchProvider{
-    rarbg.New(),
-    thepiratebay.New(),
-}
-
 // returns a searchprovider list sorted on the provided searchprovider names
 func InitSearchProviders(providers []string) (searchproviders []SearchProvider) {
-    searchproviders = make([]SearchProvider, len(allproviders))
+    searchproviders = make([]SearchProvider, len(providers))
 
     var count = 0
     for _,provider := range providers {
-        for _,compareProvider := range allproviders {
-            if compareProvider.Name() == provider {
-                searchproviders[count] = compareProvider
-                count++
-            }
+        plug, err := plugin.Open("./" + provider + ".so")
+        if err != nil {
+            Log2Me("Could not find plugin for provider " + provider)
+            continue
+        }
+
+        symSearchProvider,err := plug.Lookup("SearchProvider")
+        if err != nil {
+            Log2Me("Could not find SearchProvider symbol for " + provider)
+            continue
+        }
+
+        searchprovider,ok := symSearchProvider.(SearchProvider)
+        if !ok {
+            Log2Me("Unexpected type from SearchProvider: " + provider)
+        }
+
+        if searchprovider.Name() == provider {
+            searchprovider.Init()
+            searchproviders[count] = searchprovider
+            count++
         }
     }
 
