@@ -7,7 +7,6 @@ import (
 )
 
 func Log2Me(message string) {
-	tbot.Send(&me, message)
 	Log(message)
 }
 

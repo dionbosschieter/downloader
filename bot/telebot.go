@@ -6,26 +6,25 @@ import (
 )
 
 var tbot telebot.Bot
-var me telebot.Chat
 
 func (q *DownloadQuery) Perform(searchproviders []SearchProvider, searchpostfixes []string) {
     for _,provider := range searchproviders {
         Log("Searching for " + q.Title + " with provider " + provider.Name())
         q.Magnet = provider.Search(q.Title, searchpostfixes)
+        Log("Downloading magnet: " + q.Magnet)
 
         if q.Magnet != "" {
             q.Download()
             break
-        } else {
-            Log2Sender(q.Requester, "Could not find any result for " + q.Title+ " with provider " + provider.Name())
         }
+    }
+
+    if q.Magnet == "" {
+        Log2Sender(q.Requester, "Could not find any result for " + q.Title)
     }
 }
 
-// todo: add queue commands
-// todo: poll the queue
 func SetupTalkyBot(settings Settings, searchproviders []SearchProvider) {
-	me = telebot.Chat{ID: settings.MasterChatId}
 	bot, err := telebot.NewBot(telebot.Settings{
 		Token:  settings.TelegramToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
@@ -34,8 +33,6 @@ func SetupTalkyBot(settings Settings, searchproviders []SearchProvider) {
 		panic(err)
 	}
 	tbot = *bot
-
-	tbot.Send(&me, "# Bot is started")
 
 	tbot.Handle("/adds", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {

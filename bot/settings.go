@@ -13,7 +13,6 @@ type Settings struct {
 	TransmissionUrl string   `yaml:"transmissionUrl"`
 	SeriePath       string   `yaml:"seriePath"`
 	MoviePath       string   `yaml:"moviePath"`
-	MasterChatId    int64    `yaml:"masterChatId"`
     SearchProviders []string `yaml:"searchProviders"`
     SearchPostfixes []string `yaml:"searchPostfixes"`
 }

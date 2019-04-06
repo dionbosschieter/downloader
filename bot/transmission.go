@@ -13,7 +13,7 @@ func GetTorrents() string {
 
 	torrents, err := tclient.GetTorrents()
 	if err != nil {
-		panic(err)
+		return "Error getting current torrents: " + err.Error()
 	}
 
 	for _, t := range torrents {
@@ -29,7 +29,7 @@ func (q *DownloadQuery) Download() {
 	add, err := tclient.ExecuteAddCommand(cmd)
 
 	if err != nil {
-		Log2Me(err.Error())
+		Log2Me("Error downloading magnet: " + err.Error())
 		return
 	}
 

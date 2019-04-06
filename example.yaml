@@ -1,11 +1,10 @@
-telegramToken:   '89432749:AA...'
-transmissionUrl: 'http://<server>:<port>'
-seriePath:       '/mnt/shows'
-moviePath:       '/mnt/movies'
-masterChatId:    1337
-torrentProviders:
-  - 'thepiratebay'
+telegramToken:   '508841512:....'
+transmissionUrl: 'http://url.nl:9999/'
+seriePath:       '/mnt/bigstorage_ceph/TVShows'
+moviePath:       '/mnt/bigstorage_ceph/Movies'
+searchProviders:
   - 'rarbg'
+  - 'thepiratebay'
 searchPostfixes:
   - '1080p'
   - '720p'

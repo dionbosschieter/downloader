@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -ex
 # build all plugins you can find
 for pluginPath in ./searchprovider/*
 do

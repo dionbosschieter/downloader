@@ -47,7 +47,7 @@ func InitBot(settingsPath string) {
 	}
 
 	searchproviders := InitSearchProviders(settings.SearchProviders)
-	SetupTransmissionClient(settings)
+    SetupTransmissionClient(settings)
 	Log("Init downloader")
-	SetupTalkyBot(settings, searchproviders)
+    SetupTalkyBot(settings, searchproviders)
 }
