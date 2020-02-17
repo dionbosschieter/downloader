@@ -7,8 +7,8 @@ import (
 var settings Settings
 
 // returns a searchprovider list sorted on the provided searchprovider names
-func InitSearchProviders(providers []string) (searchproviders []SearchProvider) {
-    searchproviders = make([]SearchProvider, len(providers))
+func InitSearchProviders(providers []string) []SearchProvider {
+    searchProviders := make([]SearchProvider, len(providers))
 
     var count = 0
     for _,provider := range providers {
@@ -31,12 +31,12 @@ func InitSearchProviders(providers []string) (searchproviders []SearchProvider) 
 
         if searchprovider.Name() == provider {
             searchprovider.Init()
-            searchproviders[count] = searchprovider
+            searchProviders[count] = searchprovider
             count++
         }
     }
 
-    return searchproviders[:count]
+    return searchProviders
 }
 
 func InitBot(settingsPath string) {
@@ -46,8 +46,9 @@ func InitBot(settingsPath string) {
 		panic("No settings.yaml is defined, see example.yaml")
 	}
 
-	searchproviders := InitSearchProviders(settings.SearchProviders)
+	providers := InitSearchProviders(settings.SearchProviders)
     SetupTransmissionClient(settings)
 	Log("Init downloader")
-    SetupTalkyBot(settings, searchproviders)
+
+    SetupTalkyBot(settings, providers)
 }

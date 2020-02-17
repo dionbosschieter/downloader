@@ -7,13 +7,13 @@ import (
 
 var tbot telebot.Bot
 
-func (q *DownloadQuery) Perform(searchproviders []SearchProvider, searchpostfixes []string) {
-    for _,provider := range searchproviders {
+func (q *DownloadQuery) Perform(providers []SearchProvider, postfixes []string) {
+    for _,provider := range providers {
         Log("Searching for " + q.Title + " with provider " + provider.Name())
-        q.Magnet = provider.Search(q.Title, searchpostfixes)
-        Log("Downloading magnet: " + q.Magnet)
+        q.Magnet = provider.Search(q.Title, postfixes)
 
         if q.Magnet != "" {
+            Log("Downloading magnet: " + q.Magnet)
             q.Download()
             break
         }
@@ -24,7 +24,7 @@ func (q *DownloadQuery) Perform(searchproviders []SearchProvider, searchpostfixe
     }
 }
 
-func SetupTalkyBot(settings Settings, searchproviders []SearchProvider) {
+func SetupTalkyBot(settings Settings, providers []SearchProvider) {
 	bot, err := telebot.NewBot(telebot.Settings{
 		Token:  settings.TelegramToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
@@ -37,7 +37,7 @@ func SetupTalkyBot(settings Settings, searchproviders []SearchProvider) {
 	tbot.Handle("/adds", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
 			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
-			query.Perform(searchproviders, settings.SearchPostfixes)
+			query.Perform(providers, settings.SearchPostfixes)
 		} else {
 			tbot.Send(m.Sender, "Requires a payload /adds <payload>")
 		}
@@ -46,7 +46,7 @@ func SetupTalkyBot(settings Settings, searchproviders []SearchProvider) {
 	tbot.Handle("/addm", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
 			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: settings.MoviePath}
-			query.Perform(searchproviders, settings.SearchPostfixes)
+			query.Perform(providers, settings.SearchPostfixes)
 		} else {
 			tbot.Send(m.Sender, "Requires a payload /addm <payload>")
 		}
