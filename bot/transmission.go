@@ -23,7 +23,7 @@ func GetTorrents() string {
 	return returnstring
 }
 
-func (q *DownloadQuery) Download() {
+func (q *Query) Download() {
 	cmd, _ := transmission.NewAddCmdByMagnet(q.Magnet)
 	cmd.SetDownloadDir(q.Path)
 	add, err := tclient.ExecuteAddCommand(cmd)
@@ -37,7 +37,7 @@ func (q *DownloadQuery) Download() {
 	go q.WaitTillFinished(add)
 }
 
-func (q *DownloadQuery) WaitTillFinished(add transmission.TorrentAdded) {
+func (q *Query) WaitTillFinished(add transmission.TorrentAdded) {
 	for {
 		if TorrentIsFinished(add.ID) {
 			Log2Sender(q.Requester, add.Name+" is finished")

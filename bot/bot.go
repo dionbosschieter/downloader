@@ -2,13 +2,14 @@ package bot
 
 import (
     "plugin"
+    "github.com/dionbosschieter/downloader/searchprovider"
 )
 
 var settings Settings
 
 // returns a searchprovider list sorted on the provided searchprovider names
-func InitSearchProviders(providers []string) []SearchProvider {
-    searchProviders := make([]SearchProvider, len(providers))
+func InitSearchProviders(providers []string) []searchprovider.SearchProvider {
+    searchProviders := make([]searchprovider.SearchProvider, len(providers))
 
     var count = 0
     for _,provider := range providers {
@@ -24,7 +25,7 @@ func InitSearchProviders(providers []string) []SearchProvider {
             continue
         }
 
-        searchprovider,ok := symSearchProvider.(SearchProvider)
+        searchprovider,ok := symSearchProvider.(searchprovider.SearchProvider)
         if !ok {
             Log2Me("Unexpected type from SearchProvider: " + provider)
         }

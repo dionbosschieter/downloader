@@ -1,39 +1,47 @@
 package main
 
 import (
-    pby "github.com/gnur/go-piratebay"
+    yts "github.com/qopher/ytsgo"
 )
 
 type searchprovider struct {
-    client pby.Piratebay
+    client yts.Client
 }
 
 var SearchProvider searchprovider
 
 func (provider *searchprovider) Name() string {
-    return "thepiratebay"
+    return "yts"
 }
 
-func (provider *searchprovider) Search(title string, searchpostfixes []string) string {
-    for _, searchpostfix := range searchpostfixes {
-        torrents,_ := provider.client.Search(title + " " + searchpostfix)
+func (provider *searchprovider) Search(title string, searchPostfixes []string) string {
+    for _, searchPostfix := range searchPostfixes {
+        movies,_ := provider.client.ListMovies(yts.LMSearch(title + " " + searchPostfix))
 
-        if len(torrents) > 0 {
-            return torrents[0].MagnetLink
+        if len(movies.Movies) > 0 {
+            movie := movies.Movies[0]
+
+            if len(movie.Torrents) > 0 {
+                return movie.Torrents[0].Magnet()
+            }
         }
     }
 
-    torrents,_ := provider.client.Search(title)
+    movies,_ := provider.client.ListMovies(yts.LMSearch(title))
 
-    if len(torrents) > 0 {
-        return torrents[0].MagnetLink
+    if len(movies.Movies) > 0 {
+        movie := movies.Movies[0]
+
+        if len(movie.Torrents) > 0 {
+            return movie.Torrents[0].Magnet()
+        }
     }
 
     return ""
 }
 
 func (provider *searchprovider) Init() {
-    provider.client = pby.Piratebay {
-        Url: "https://thepiratebay.org",
-    }
+    client, _ := yts.New()
+
+    provider.client = *client
 }

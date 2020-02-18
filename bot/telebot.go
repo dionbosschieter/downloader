@@ -1,30 +1,14 @@
 package bot
 
 import (
-	"gopkg.in/tucnak/telebot.v2"
+    "github.com/dionbosschieter/downloader/searchprovider"
+    "gopkg.in/tucnak/telebot.v2"
 	"time"
 )
 
 var tbot telebot.Bot
 
-func (q *DownloadQuery) Perform(providers []SearchProvider, postfixes []string) {
-    for _,provider := range providers {
-        Log("Searching for " + q.Title + " with provider " + provider.Name())
-        q.Magnet = provider.Search(q.Title, postfixes)
-
-        if q.Magnet != "" {
-            Log("Downloading magnet: " + q.Magnet)
-            q.Download()
-            break
-        }
-    }
-
-    if q.Magnet == "" {
-        Log2Sender(q.Requester, "Could not find any result for " + q.Title)
-    }
-}
-
-func SetupTalkyBot(settings Settings, providers []SearchProvider) {
+func SetupTalkyBot(settings Settings, providers []searchprovider.SearchProvider) {
 	bot, err := telebot.NewBot(telebot.Settings{
 		Token:  settings.TelegramToken,
 		Poller: &telebot.LongPoller{Timeout: 10 * time.Second},
@@ -36,7 +20,7 @@ func SetupTalkyBot(settings Settings, providers []SearchProvider) {
 
 	tbot.Handle("/adds", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
-			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
+			query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
 			query.Perform(providers, settings.SearchPostfixes)
 		} else {
 			tbot.Send(m.Sender, "Requires a payload /adds <payload>")
@@ -45,7 +29,7 @@ func SetupTalkyBot(settings Settings, providers []SearchProvider) {
 
 	tbot.Handle("/addm", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
-			query := DownloadQuery{Title: m.Payload, Requester: m.Sender, Path: settings.MoviePath}
+			query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.MoviePath}
 			query.Perform(providers, settings.SearchPostfixes)
 		} else {
 			tbot.Send(m.Sender, "Requires a payload /addm <payload>")
