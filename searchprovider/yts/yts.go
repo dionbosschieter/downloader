@@ -1,22 +1,20 @@
-package main
+package yts
 
 import (
-    yts "github.com/qopher/ytsgo"
+    ytsclient "github.com/qopher/ytsgo"
 )
 
-type searchprovider struct {
-    client yts.Client
+type SearchProvider struct {
+    client ytsclient.Client
 }
 
-var SearchProvider searchprovider
-
-func (provider *searchprovider) Name() string {
+func (provider *SearchProvider) Name() string {
     return "yts"
 }
 
-func (provider *searchprovider) Search(title string, searchPostfixes []string) string {
+func (provider *SearchProvider) Search(title string, searchPostfixes []string) string {
     for _, searchPostfix := range searchPostfixes {
-        movies,_ := provider.client.ListMovies(yts.LMSearch(title + " " + searchPostfix))
+        movies,_ := provider.client.ListMovies(ytsclient.LMSearch(title + " " + searchPostfix))
 
         if len(movies.Movies) > 0 {
             movie := movies.Movies[0]
@@ -27,7 +25,7 @@ func (provider *searchprovider) Search(title string, searchPostfixes []string) s
         }
     }
 
-    movies,_ := provider.client.ListMovies(yts.LMSearch(title))
+    movies,_ := provider.client.ListMovies(ytsclient.LMSearch(title))
 
     if len(movies.Movies) > 0 {
         movie := movies.Movies[0]
@@ -40,8 +38,8 @@ func (provider *searchprovider) Search(title string, searchPostfixes []string) s
     return ""
 }
 
-func (provider *searchprovider) Init() {
-    client, _ := yts.New()
+func (provider *SearchProvider) Init() {
+    client, _ := ytsclient.New()
 
     provider.client = *client
 }

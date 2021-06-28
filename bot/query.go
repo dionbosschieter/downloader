@@ -3,6 +3,7 @@ package bot
 import (
     "github.com/dionbosschieter/downloader/searchprovider"
     "gopkg.in/tucnak/telebot.v2"
+    "log"
 )
 
 type Query struct {
@@ -15,17 +16,22 @@ type Query struct {
 
 func (query *Query) Perform(providers []searchprovider.SearchProvider, postfixes []string) {
     for _,provider := range providers {
-        Log("Searching for " + query.Title + " with provider " + provider.Name())
+        log.Println("Searching for " + query.Title + " with provider " + provider.Name())
         query.Magnet = provider.Search(query.Title, postfixes)
 
         if query.Magnet != "" {
-            Log("Downloading magnet: " + query.Magnet)
+            log.Println("Downloading magnet: " + query.Magnet)
             query.Download()
             break
         }
     }
 
     if query.Magnet == "" {
-        Log2Sender(query.Requester, "Could not find any result for " + query.Title)
+        query.Log2Requester("Could not find any result for " + query.Title)
     }
+}
+
+func (query *Query) Log2Requester(message string) {
+    tbot.Send(query.Requester, message)
+    log.Println(message)
 }

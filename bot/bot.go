@@ -1,38 +1,52 @@
 package bot
 
 import (
-    "plugin"
+    "fmt"
     "github.com/dionbosschieter/downloader/searchprovider"
+    "github.com/dionbosschieter/downloader/searchprovider/rarbg"
+    "github.com/dionbosschieter/downloader/searchprovider/thepiratebay"
+    "github.com/dionbosschieter/downloader/searchprovider/yts"
+    "log"
 )
 
-var settings Settings
+// Bot is the entry point of the bot logic, see Start()
+type Bot struct {
+    // SettingsPath is the location to the settings file to read
+    SettingsPath string
+    // settings contains all the information we need to run this bot
+    settings Settings
+}
+
+func (b *Bot) Start() {
+    if b.settings.FileExists(b.SettingsPath) {
+        b.settings.Parse(b.SettingsPath)
+    } else {
+        fmt.Println("No settings.yaml is defined, see example.yaml")
+        return
+    }
+
+    providers := InitSearchProviders(b.settings.SearchProviders)
+    SetupTransmissionClient(b.settings)
+    log.Println("Init downloader")
+
+    RunTelegramBot(b.settings, providers)
+}
 
 // returns a searchprovider list sorted on the provided searchprovider names
 func InitSearchProviders(providers []string) []searchprovider.SearchProvider {
     searchProviders := make([]searchprovider.SearchProvider, len(providers))
 
-    var count = 0
-    for _,provider := range providers {
-        plug, err := plugin.Open("./" + provider + ".so")
-        if err != nil {
-            Log2Me("Could not find plugin for provider " + provider)
-            continue
+    count := 0
+    for _,providerName := range providers {
+        provider := getProviderByName(providerName)
+
+        if provider == nil {
+            log.Printf("Can't find given search provider '%s'\n", providerName)
         }
 
-        symSearchProvider,err := plug.Lookup("SearchProvider")
-        if err != nil {
-            Log2Me("Could not find SearchProvider symbol for " + provider)
-            continue
-        }
-
-        searchprovider,ok := symSearchProvider.(searchprovider.SearchProvider)
-        if !ok {
-            Log2Me("Unexpected type from SearchProvider: " + provider)
-        }
-
-        if searchprovider.Name() == provider {
-            searchprovider.Init()
-            searchProviders[count] = searchprovider
+        if provider.Name() == providerName {
+            provider.Init()
+            searchProviders[count] = provider
             count++
         }
     }
@@ -40,16 +54,17 @@ func InitSearchProviders(providers []string) []searchprovider.SearchProvider {
     return searchProviders
 }
 
-func InitBot(settingsPath string) {
-    if settings.FileExists(settingsPath) {
-		settings.Parse(settingsPath)
-	} else {
-		panic("No settings.yaml is defined, see example.yaml")
-	}
+// getProviderByName returns a provider or nil if there no match can be found
+func getProviderByName(providerName string) (searchprovider.SearchProvider) {
+    if providerName == "rarbg" {
+        return &rarbg.SearchProvider{}
+    }
+    if providerName == "thepiratebay" {
+        return &thepiratebay.SearchProvider{}
+    }
+    if providerName == "yts" {
+        return &yts.SearchProvider{}
+    }
 
-	providers := InitSearchProviders(settings.SearchProviders)
-    SetupTransmissionClient(settings)
-	Log("Init downloader")
-
-    SetupTalkyBot(settings, providers)
+    return nil
 }

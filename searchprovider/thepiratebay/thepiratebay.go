@@ -1,20 +1,18 @@
-package main
+package thepiratebay
 
 import (
     pby "github.com/gnur/go-piratebay"
 )
 
-type searchprovider struct {
+type SearchProvider struct {
     client pby.Piratebay
 }
 
-var SearchProvider searchprovider
-
-func (provider *searchprovider) Name() string {
+func (provider *SearchProvider) Name() string {
     return "thepiratebay"
 }
 
-func (provider *searchprovider) Search(title string, searchpostfixes []string) string {
+func (provider *SearchProvider) Search(title string, searchpostfixes []string) string {
     for _, searchpostfix := range searchpostfixes {
         torrents,_ := provider.client.Search(title + " " + searchpostfix)
 
@@ -32,7 +30,7 @@ func (provider *searchprovider) Search(title string, searchpostfixes []string) s
     return ""
 }
 
-func (provider *searchprovider) Init() {
+func (provider *SearchProvider) Init() {
     provider.client = pby.Piratebay {
         Url: "https://thepiratebay.org",
     }

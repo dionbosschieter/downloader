@@ -3,7 +3,8 @@ package bot
 import (
 	"fmt"
 	"github.com/tubbebubbe/transmission"
-	"time"
+    "log"
+    "time"
 )
 
 var tclient transmission.TransmissionClient
@@ -29,18 +30,18 @@ func (q *Query) Download() {
 	add, err := tclient.ExecuteAddCommand(cmd)
 
 	if err != nil {
-		Log2Me("Error downloading magnet: " + err.Error())
+		log.Println("Error downloading magnet: " + err.Error())
 		return
 	}
 
-	Log2Sender(q.Requester, "added torrent: "+add.Name)
+	q.Log2Requester("added torrent: "+add.Name)
 	go q.WaitTillFinished(add)
 }
 
 func (q *Query) WaitTillFinished(add transmission.TorrentAdded) {
 	for {
 		if TorrentIsFinished(add.ID) {
-			Log2Sender(q.Requester, add.Name+" is finished")
+			q.Log2Requester(add.Name + " is finished")
 			break
 		}
 
@@ -60,7 +61,7 @@ func RemoveTorrent(id int) {
 func TorrentIsFinished(id int) bool {
 	torrents, err := tclient.GetTorrents()
 	if err != nil {
-		Log2Me(err.Error())
+		log.Println(err.Error())
 		return false
 	}
 
@@ -70,7 +71,7 @@ func TorrentIsFinished(id int) bool {
 		}
 	}
 
-	Log2Me(fmt.Sprintf("Cant find torrent by id %d", id))
+	log.Println(fmt.Sprintf("Cant find torrent by id %d", id))
 	return true
 }
 

@@ -1,9 +1,9 @@
 package bot
 
 import (
-    "io/ioutil"
-    "gopkg.in/yaml.v2"
     "fmt"
+    "gopkg.in/yaml.v2"
+    "io/ioutil"
     "os"
 )
 
@@ -18,15 +18,14 @@ type Settings struct {
 }
 
 func (settings *Settings) FileExists(settingsPath string) bool {
-    if _, err := os.Stat(settingsPath); err != nil {
-        if os.IsNotExist(err) {
-            return false
-        }
+    if _, err := os.Stat(settingsPath); err == nil {
+        return true
     }
-    return true
+
+    return false
 }
 
-func (settings *Settings) Parse(settingsPath string) *Settings {
+func (settings *Settings) Parse(settingsPath string) {
 	yamlFile, err := ioutil.ReadFile(settingsPath)
 	if err != nil {
 		panic(fmt.Sprintf("err opening settings: #%v ", err))
@@ -35,6 +34,4 @@ func (settings *Settings) Parse(settingsPath string) *Settings {
 	if err != nil {
 		panic(fmt.Sprintf("err parsing settings: %v", err))
 	}
-
-	return settings
 }
