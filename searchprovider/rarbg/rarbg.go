@@ -12,7 +12,19 @@ func (provider *SearchProvider) Name() string {
     return "rarbg"
 }
 
-func (provider *SearchProvider) Search(title string, searchpostfixes []string) (magnet string) {
+func (provider *SearchProvider) Search(title string, searchPostfixes []string) (magnet string) {
+    // query with the provided postfixes
+    for _, searchPostfix := range searchPostfixes {
+        var query = map[string]string{"search_string":title + " " + searchPostfix, "sort": "seeders"}
+
+        result,_ := provider.client.Search(query)
+
+        if len(result.Torrents) > 0 {
+            return result.Torrents[0].MagnetURL
+        }
+    }
+
+    // fall back to postfix less search
     var query = map[string]string{"search_string":title, "sort": "seeders"}
 
     result,_ := provider.client.Search(query)
