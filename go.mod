@@ -2,8 +2,10 @@ module github.com/dionbosschieter/downloader
 
 go 1.17
 
+require github.com/PuerkitoBio/goquery v1.8.0
+
 require (
-	github.com/gnur/go-piratebay v0.0.0-20171005085609-7f4b3faf485c // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/qopher/ytsgo v0.0.0-20191013044739-41a38e4e8c38 // indirect
 	github.com/ricksancho/rarbg-torrentapi v0.0.0-20180502070042-4dd9a86d046d // indirect
