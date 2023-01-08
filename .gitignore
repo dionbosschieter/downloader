@@ -1,3 +1,4 @@
 settings.yaml
 *.deb
 downloader
+.idea/
