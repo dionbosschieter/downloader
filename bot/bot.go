@@ -33,7 +33,7 @@ func (b *Bot) Start() {
 	RunTelegramBot(b.settings, providers)
 }
 
-// returns a searchprovider list sorted on the provided searchprovider names
+// InitSearchProviders returns a SearchProvider list sorted on the provided provider names
 func InitSearchProviders(providers []string) []searchprovider.SearchProvider {
 	searchProviders := make([]searchprovider.SearchProvider, len(providers))
 
