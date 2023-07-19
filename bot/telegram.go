@@ -1,10 +1,10 @@
 package bot
 
 import (
-    "github.com/dionbosschieter/downloader/searchprovider"
-    "gopkg.in/tucnak/telebot.v2"
-    "log"
-    "time"
+	"github.com/dionbosschieter/downloader/searchprovider"
+	"gopkg.in/tucnak/telebot.v2"
+	"log"
+	"time"
 )
 
 var tbot telebot.Bot
@@ -25,7 +25,7 @@ func RunTelegramBot(settings Settings, providers []searchprovider.SearchProvider
 			query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
 			query.Perform(providers, settings.SearchPostfixes)
 		} else {
-            _, _ = tbot.Send(m.Sender, "Requires a payload /adds <payload>")
+			_, _ = tbot.Send(m.Sender, "Requires a payload /adds <payload>")
 		}
 	})
 
@@ -34,16 +34,20 @@ func RunTelegramBot(settings Settings, providers []searchprovider.SearchProvider
 			query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.MoviePath}
 			query.Perform(providers, settings.SearchPostfixes)
 		} else {
-            _, _ = tbot.Send(m.Sender, "Requires a payload /addm <payload>")
+			_, _ = tbot.Send(m.Sender, "Requires a payload /addm <payload>")
 		}
 	})
 
 	tbot.Handle("/status", func(m *telebot.Message) {
-        _, _ = tbot.Send(m.Sender, GetTorrents())
+		_, _ = tbot.Send(m.Sender, GetTorrents())
 	})
 
 	tbot.Handle("/help", func(m *telebot.Message) {
-        _, _ = tbot.Send(m.Sender, "/addm <search title> for movies\n/adds <search title> for series")
+		_, _ = tbot.Send(m.Sender, "/addm <search title> for movies\n/adds <search title> for series\n/status\n/clear")
+	})
+
+	tbot.Handle("/clear", func(m *telebot.Message) {
+		_, _ = tbot.Send(m.Sender, ClearTorrents())
 	})
 
 	tbot.Start()
