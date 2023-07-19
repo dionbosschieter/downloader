@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	downloadButtonClass = ".download-torrent.button-green-download-big"
+	downloadButtonClass = ".magnet-download.download-torrent.magnet"
 	searchURL           = "https://yts.pm/ajax/search?query=%s"
 )
 

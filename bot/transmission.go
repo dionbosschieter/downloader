@@ -3,8 +3,8 @@ package bot
 import (
 	"fmt"
 	"github.com/tubbebubbe/transmission"
-    "log"
-    "time"
+	"log"
+	"time"
 )
 
 var tclient transmission.TransmissionClient
@@ -14,7 +14,7 @@ func GetTorrents() string {
 
 	torrents, err := tclient.GetTorrents()
 	if err != nil {
-		return "Error getting current torrents: " + err.Error()
+		return "Error listing current torrents: " + err.Error()
 	}
 
 	for _, t := range torrents {
@@ -34,7 +34,7 @@ func (q *Query) Download() {
 		return
 	}
 
-	q.Log2Requester("added torrent: "+add.Name)
+	q.Log2Requester("added torrent: " + add.Name)
 	go q.WaitTillFinished(add)
 }
 
@@ -56,6 +56,22 @@ func RemoveTorrent(id int) {
 	cmd, _ := transmission.NewDelCmd(id, false)
 
 	tclient.ExecuteCommand(cmd)
+}
+
+func ClearTorrents() (ret string) {
+	ret = "Removed torrents:\n"
+	torrents, err := tclient.GetTorrents()
+	if err != nil {
+		return "Error listing current torrents: " + err.Error()
+	}
+
+	for _, t := range torrents {
+		cmd, _ := transmission.NewDelCmd(t.ID, true)
+
+		ret += "Removing " + t.Name + "\n"
+		_, _ = tclient.ExecuteCommand(cmd)
+	}
+	return
 }
 
 func TorrentIsFinished(id int) bool {
