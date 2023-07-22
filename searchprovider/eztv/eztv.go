@@ -1,4 +1,4 @@
-package magnetdl
+package eztv
 
 import (
 	"fmt"
@@ -11,24 +11,23 @@ import (
 )
 
 const (
-	searchURL = "https://www.magnetdl.com/%s/%s/"
+	searchURL = "https://eztv1.xyz/search/%s"
 )
 
 type searchEntry struct {
-	URL      string
-	Magnet   string
-	Title    string
-	Size     string
-	UplDate  string
-	Seeders  int
-	Leechers int
+	URL     string
+	Magnet  string
+	Title   string
+	Size    string
+	UplDate string
+	Seeders int
 }
 
 type SearchProvider struct {
 }
 
 func (provider *SearchProvider) Name() string {
-	return "magnetdl"
+	return "eztv"
 }
 
 func (provider *SearchProvider) Search(title string, searchPostfixes []string) string {
@@ -53,7 +52,7 @@ func (provider *SearchProvider) Search(title string, searchPostfixes []string) s
 }
 
 // Lookup takes a user search as a parameter, launches the http request
-// with a custom timeout, and returns clean torrent information fetched from 1337x.to
+// with a custom timeout, and returns clean torrent information fetched from eztv
 func search(in string) ([]searchEntry, error) {
 	searchUrl := buildSearchURL(in)
 
@@ -81,39 +80,32 @@ func parseSearchPage(htmlReader io.ReadCloser) ([]searchEntry, error) {
 	var torrents []searchEntry
 
 	// Results are located in a clean html <table>
-	doc.Find("table.download > tbody > tr").Each(func(i int, s *goquery.Selection) {
+	doc.Find("table.forum_header_border > tbody > tr.forum_header_border").Each(func(i int, s *goquery.Selection) {
 		var t searchEntry
 
 		// Magnet is the href of the 1st <a> tag in the td.m
-		magnetURL, ok := s.Find("td.m > a").Eq(0).First().Attr("href")
+		magnetURL, ok := s.Find("td.forum_thread_post > a").Eq(2).First().Attr("href")
 		if !ok {
 			log.Print("Could not find a magnet URL for a torrent so ignoring it")
 			return
 		}
 		t.Magnet = magnetURL
-		t.Title, _ = s.Find("td.n > a").Eq(0).First().Attr("title")
+		t.Title, _ = s.Find("td.forum_thread_post > a").Eq(1).First().Attr("title")
 
 		// Seeders and leechers are located in the 2nd and 3rd <td>.
 		// We convert it to integers and if conversion fails we convert it to -1.
-		seedersStr := s.Find("td.s").Eq(0).First().Text()
+		seedersStr := s.Find("td.forum_thread_post_end > font").Eq(0).First().Text()
 		seeders, err := strconv.Atoi(seedersStr)
 		if err != nil {
 			seeders = -1
 		}
 		t.Seeders = seeders
 
-		leechersStr := s.Find("td.l").Eq(0).First().Text()
-		leechers, err := strconv.Atoi(leechersStr)
-		if err != nil {
-			leechers = -1
-		}
-		t.Leechers = leechers
-
 		// Upload date is the text of the 3th <td> tag
-		t.UplDate = s.Find("td").Eq(2).First().Text()
+		t.UplDate = s.Find("td.forum_thread_post").Eq(4).First().Text()
 
 		// Size is the text of the 6th <td> tag
-		t.Size = s.Find("td").Eq(5).First().Text()
+		t.Size = s.Find("td.forum_thread_post").Eq(3).First().Text()
 
 		torrents = append(torrents, t)
 	})
@@ -124,7 +116,7 @@ func parseSearchPage(htmlReader io.ReadCloser) ([]searchEntry, error) {
 func buildSearchURL(in string) string {
 	query := strings.ReplaceAll(strings.ToLower(in), " ", "-")
 
-	return fmt.Sprintf(searchURL, string(query[0]), query)
+	return fmt.Sprintf(searchURL, query)
 }
 
 func (provider *SearchProvider) Init() {

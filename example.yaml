@@ -6,6 +6,7 @@ searchProviders:
   - 'magnetdl'
   - '1337x'
   - 'yts'
+  - 'eztv'
   - 'magnet'
 searchPostfixes:
   - '4k'
