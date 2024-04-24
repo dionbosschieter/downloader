@@ -13,7 +13,8 @@ import (
 
 const (
 	downloadButtonClass = ".magnet-download.download-torrent.magnet"
-	searchURL           = "https://yts.pm/ajax/search?query=%s"
+	baseURL             = "https://en.yts-official.mx/"
+	searchURL           = baseURL + "ajax/search?query=%s"
 )
 
 var searchError = errors.New("search error occured")
@@ -99,7 +100,7 @@ func parseSearchPage(body io.ReadCloser) ([]ytsSearchEntry, error) {
 }
 
 func (e ytsSearchEntry) Magnet() string {
-	searchEntryURL := "https:" + e.URL
+	searchEntryURL := baseURL + e.URL
 	response, err := http.Get(searchEntryURL)
 	if err != nil {
 		log.Printf("error occured during magnitization of yts url: %s", searchEntryURL)
