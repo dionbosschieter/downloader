@@ -20,6 +20,28 @@ func RunTelegramBot(settings Settings, providers []searchprovider.SearchProvider
 	}
 	tbot = *bot
 
+	tbot.Handle("/schedules", func(m *telebot.Message) {
+		if len(m.Payload) == 0 {
+			_, _ = tbot.Send(m.Sender, "Requires a payload /schedules <payload>")
+
+			return
+		}
+
+		query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
+		go query.Schedule(providers, settings.SearchPostfixes)
+	})
+
+	tbot.Handle("/schedulem", func(m *telebot.Message) {
+		if len(m.Payload) == 0 {
+			_, _ = tbot.Send(m.Sender, "Requires a payload /schedulem <payload>")
+
+			return
+		}
+
+		query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.MoviePath}
+		go query.Schedule(providers, settings.SearchPostfixes)
+	})
+
 	tbot.Handle("/adds", func(m *telebot.Message) {
 		if len(m.Payload) > 0 {
 			query := Query{Title: m.Payload, Requester: m.Sender, Path: settings.SeriePath}
@@ -43,7 +65,7 @@ func RunTelegramBot(settings Settings, providers []searchprovider.SearchProvider
 	})
 
 	tbot.Handle("/help", func(m *telebot.Message) {
-		_, _ = tbot.Send(m.Sender, "/addm <search title> for movies\n/adds <search title> for series\n/status\n/clear")
+		_, _ = tbot.Send(m.Sender, "/addm <search title> for movies\n/adds <search title> for series\n/status\n/schedules <search title> for series\n/schedulem <search title> for movies\n/clear kill and remove running downloads")
 	})
 
 	tbot.Handle("/clear", func(m *telebot.Message) {
