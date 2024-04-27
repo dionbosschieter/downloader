@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const (
@@ -43,9 +44,7 @@ func (provider *SearchProvider) Search(title string, searchPostfixes []string) s
 		movies, _ := search(title + " " + searchPostfix)
 
 		if len(movies) > 0 {
-			movie := movies[0]
-
-			return movie.Magnet()
+			return getResultFromSearchEntries(title, movies)
 		}
 	}
 
@@ -55,12 +54,23 @@ func (provider *SearchProvider) Search(title string, searchPostfixes []string) s
 	}
 
 	if len(movies) > 0 {
-		movie := movies[0]
-
-		return movie.Magnet()
+		return getResultFromSearchEntries(title, movies)
 	}
 
 	return ""
+}
+
+func getResultFromSearchEntries(title string, movies []ytsSearchEntry) string {
+	// Try to find an exact match
+	for _, movie := range movies {
+		// lower case match
+		if strings.ToLower(movie.Title) == strings.ToLower(title) {
+			return movie.Magnet()
+		}
+	}
+
+	movie := movies[0]
+	return movie.Magnet()
 }
 
 // Lookup takes a user search as a parameter, launches the http request
