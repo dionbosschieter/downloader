@@ -1,4 +1,4 @@
-package yts
+package rarbg
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -7,16 +7,14 @@ import (
 
 func TestSearchProvider_Search(t *testing.T) {
 	provider := SearchProvider{}
-	provider.Init()
 
 	answer := provider.Search("test", []string{})
 
-	assert.Contains(t, answer, "magnet:?xt=urn:btih:2C7244EF6EEC682996F806685D494648C9339C8C")
+	assert.Contains(t, "magnet:?xt=urn:btih:BDFED52F8B46295DEB23FEA529D00C4FC9DAE8FA", answer)
 }
 
 func TestSearchProvider_Name(t *testing.T) {
 	provider := SearchProvider{}
-	provider.Init()
 
-	assert.Equal(t, "yts", provider.Name())
+	assert.Equal(t, "rarbg", provider.Name())
 }

@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	searchURL = "https://eztv1.xyz/search/%s"
+	searchURL       = "https://eztv1.xyz/search/%s"
+	showMagnetLinks = "layout=def_wlinks"
 )
 
 type searchEntry struct {
@@ -56,7 +57,7 @@ func (provider *SearchProvider) Search(title string, searchPostfixes []string) s
 func search(in string) ([]searchEntry, error) {
 	searchUrl := buildSearchURL(in)
 
-	resp, err := http.Get(searchUrl)
+	resp, err := http.Post(searchUrl, "application/x-www-form-urlencoded", strings.NewReader(showMagnetLinks))
 	if err != nil {
 		return nil, fmt.Errorf("error while fetching url: %v", err)
 	}

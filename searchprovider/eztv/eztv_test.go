@@ -16,7 +16,7 @@ func TestSearchProvider_Search(t *testing.T) {
 
 	answer := provider.Search("test", []string{})
 
-	assert.Contains(t, answer, "magnet:?xt=urn:btih:def473f99aa4f0c99cd2b4ded600ab902e7bee0c")
+	assert.Contains(t, answer, "magnet:?xt=urn:btih:a550336ee6670d0dd46885cbf1c79e8d4d2d1faa")
 }
 
 func TestSearchProvider_Name(t *testing.T) {

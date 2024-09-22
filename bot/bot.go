@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/dionbosschieter/downloader/searchprovider"
 	"github.com/dionbosschieter/downloader/searchprovider/eztv"
-	"github.com/dionbosschieter/downloader/searchprovider/leet"
 	"github.com/dionbosschieter/downloader/searchprovider/magnet"
-	"github.com/dionbosschieter/downloader/searchprovider/magnetdl"
+	"github.com/dionbosschieter/downloader/searchprovider/magnethair"
+	"github.com/dionbosschieter/downloader/searchprovider/rarbg"
 	"github.com/dionbosschieter/downloader/searchprovider/yts"
 	"log"
 )
@@ -58,17 +58,17 @@ func InitSearchProviders(providers []string) []searchprovider.SearchProvider {
 
 // getProviderByName returns a provider or nil if there no match can be found
 func getProviderByName(providerName string) searchprovider.SearchProvider {
-	if providerName == "1337x" {
-		return &leet.SearchProvider{}
+	if providerName == "rarbg" {
+		return &rarbg.SearchProvider{}
+	}
+	if providerName == "magnethair" {
+		return &magnethair.SearchProvider{}
 	}
 	if providerName == "yts" {
 		return &yts.SearchProvider{}
 	}
 	if providerName == "magnet" {
 		return &magnet.SearchProvider{}
-	}
-	if providerName == "magnetdl" {
-		return &magnetdl.SearchProvider{}
 	}
 	if providerName == "eztv" {
 		return &eztv.SearchProvider{}
