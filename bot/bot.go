@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"github.com/dionbosschieter/downloader/searchprovider"
+	"github.com/dionbosschieter/downloader/searchprovider/bitmagnet"
 	"github.com/dionbosschieter/downloader/searchprovider/eztv"
 	"github.com/dionbosschieter/downloader/searchprovider/magnet"
 	"github.com/dionbosschieter/downloader/searchprovider/magnethair"
@@ -72,6 +73,9 @@ func getProviderByName(providerName string) searchprovider.SearchProvider {
 	}
 	if providerName == "eztv" {
 		return &eztv.SearchProvider{}
+	}
+	if providerName == "bitmagnet" {
+		return &bitmagnet.SearchProvider{}
 	}
 
 	return nil

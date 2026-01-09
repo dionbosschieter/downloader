@@ -3,11 +3,12 @@ transmissionUrl: 'http://url.nl:9999/'
 seriePath:       '/mnt/bigstorage_ceph/TVShows'
 moviePath:       '/mnt/bigstorage_ceph/Movies'
 searchProviders:
+  - 'magnet'
+  - 'bitmagnet'
   - 'rarbg'
   - 'magnethair'
   - 'yts'
   - 'eztv'
-  - 'magnet'
 searchPostfixes:
   - '4k'
   - '1080p'
